@@ -56,14 +56,14 @@ app.get('/api/accounts/:address/balances', (req, res) => {
 
 // do payment
 app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
-	var destination = req.params.address;
 	// post body data
 	var source = req.body.source;
 	var secret = req.body.secret;
 	var value = req.body.value;
 	var currency = req.body.currency;
-	var counterparty = req.body.counterparty;
+	var counterparty = req.body.counterparty || '';
 	var memo = req.body.memo;
+	var destination = req.body.destination;
 	var payment = {
 		source: {
 			address: source,
@@ -82,7 +82,7 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 		api.preparePayment(source, payment).then(prepared => {
 			prepared.secret = secret;
 			var signedTx = api.sign(prepared.tx_json, prepared.secret);
-			api.submit(signedTx).then(result => {
+			api.submit(signedTx, true).then(result => {
 				return res.json({success: result.resultCode === 'tesSUCCESS', data: result});
 			}).catch(error => {
 				return res.json({success: false, error: error});
