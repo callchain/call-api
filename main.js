@@ -83,6 +83,7 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 			prepared.secret = secret;
 			var signedTx = api.sign(prepared.tx_json, prepared.secret);
 			api.submit(signedTx, true).then(result => {
+				result.hash = signedTx.id;
 				return res.json({success: result.resultCode === 'tesSUCCESS', data: result});
 			}).catch(error => {
 				return res.json({success: false, error: error});
@@ -106,7 +107,10 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 	if (ledger !== 0) {
 		options.marker = {ledger: ledger, seq: seq};
 	}
-	options.initiated = Boolean(req.query.initiated);
+	var initiated = req.query.initiated;
+	if (initiated === 'false' || initiated === 'true') {
+		options.initiated = (initiated === 'true');
+	}
 	var counterparty = req.query.counterparty;
 	if (counterparty) {
 		options.counterparty = counterparty;
