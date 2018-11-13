@@ -95,13 +95,63 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 });
 
 // create one order
-app.post('/api/accounts/:address/orders', (req, res) => {
+app.post('/api/accounts/:address/orders', upload.array(),(req, res) => {
+	var source = req.params.address;
+	// post body data
+	var secret = req.body.secret;
+	var type = req.body.type;
+	var baseCurrency = req.body.baseCurrency;
+	var baseCounterparty = req.body.baseCounterparty;
+	var baseValue = req.body.baseValue;
+	var counterCurrency = req.body.counterCurrency;
+	var counterCounterparty = req.body.counterCounterparty;
+	var counterValue = req.body.counterValue;
+	var order = {
+		"direction": type,
+		"quantity": {
+			"currency": baseCurrency,
+			"counterparty": baseCurrency === 'CALL' ? '' : baseCounterparty,
+			"value": baseValue
+		},
+		"totalPrice": {
+			"currency": counterCurrency,
+			"counterparty": counterCurrency === 'CALL' ? '' : counterCounterparty,
+			"value": counterValue
+		}
+	};
 
+	api.connect().then(() => {
+		api.prepareOrder(source, order).then(prepared => {
+			var signedTransaction = api.sign(prepared.tx_json, secret);
+			api.submit(signedTransaction, true).then(result => {
+				return res.json({ success: true, data: result });
+			}, error => {
+				return res.json({ success: false, error: error });
+			});
+		}).catch(error => {
+			return res.json({ success: false, error: error });
+		})
+	});
 });
 
 // cancel one order
-app.delete('/api/accounts/:address/orders/:seq', (req, res) => {
-
+app.delete('/api/accounts/:address/orders/:seq',upload.array(), (req, res) => {
+	var source = req.params.address;
+	var seq = req.params.seq;
+	// post body data
+	var secret = req.body.secret;
+	api.connect().then(() => {
+		api.prepareOrderCancellation(source, { orderSequence: Number(seq) }).then(prepared => {
+			var signedTransaction = api.sign(prepared.tx_json, secret);
+			api.submit(signedTransaction, true).then(result => {
+				return res.json({ success: true, data: result });
+			}, error => {
+				return res.json({ success: false, error: error });
+			});
+		}).catch(error => {
+			return res.json({ success: false, error: error });
+		})
+	});
 });
 
 // get account transaction history

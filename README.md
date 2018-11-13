@@ -329,3 +329,76 @@
     specification | string | Transaction details
     outcome | string | Transaction results
     
+    ### Create Order
+
+- /api/accounts/:address/orders, POST
+
+#### Example
+
+http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders
+
+#### Request parameters
+Name | Type | Description
+---- | ---- | -----------
+address | string | Payer wallet address 
+secret | string | Payer wallet private key
+type | string | Type of transaction,sell or buy
+baseCurrency | string | Base currency name
+baseCounterparty | string | Base issuer address
+baseValue | string | Base currency transaction amount
+counterCurrency | string | Counter currency name
+counterCounterparty | string | Counter issuer address
+counterValue | string | Counter currency transaction amount
+
+```json
+{
+    "success": true,
+    "data": {
+        "resultCode": "tesSUCCESS",
+        "resultMessage": "The transaction was applied. Only final in a validated ledger."
+    }
+}
+```
+
+#### Return Value
+
+Name | Type | Description
+---- | ---- | -----------
+success | boolean | Request results 
+data | object | Results
+resultCode | string | Server results for payment transactions
+resultMessage | string | Description of payment transaction results
+
+### Cancel Order
+
+- /api/accounts/:address/orders/:order, POST
+
+#### Example
+
+http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders/9
+
+#### Request parameters
+Name | Type | Description
+---- | ---- | -----------
+address | string | Payer wallet address 
+order | string | Order number
+secret | string | Payer wallet private key
+
+```json
+{
+    "success": true,
+    "data": {
+        "resultCode": "tesSUCCESS",
+        "resultMessage": "The transaction was applied. Only final in a validated ledger."
+    }
+}
+```
+
+#### Return Value
+
+Name | Type | Description
+---- | ---- | -----------
+success | boolean | Request results 
+data | object |  Results
+resultCode | string | Server results for payment transactions
+resultMessage | string | Description of payment transaction results
