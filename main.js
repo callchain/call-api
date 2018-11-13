@@ -43,13 +43,13 @@ app.get('/api/accounts/:address/balances', (req, res) => {
 		return api.getBalances(address, options);
 	}).then(balances => {
 		api.disconnect();
-		let data = [];
+		let result = [];
 		balances.forEach(balance => {
 			if (Number(balance.value) >=0) {
-				data.push(balance);
+				result.push(balance);
 			}
 		});
-		return res.json({success: true, data});
+		return res.json({success: true, data: result});
 	}).catch(error => {
 		return res.json({success: false, error: error});
 	});
