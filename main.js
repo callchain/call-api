@@ -3,6 +3,7 @@ let app = express();
 import bodyParser from 'body-parser';
 import multer from 'multer';
 
+//import call from 'call-lib';
 const call = require('call-lib');
 const server = 'wss://s1.callchain.live:5020';
 const api = new call.CallAPI({server: server});
@@ -42,13 +43,13 @@ app.get('/api/accounts/:address/balances', (req, res) => {
 		return api.getBalances(address, options);
 	}).then(balances => {
 		api.disconnect();
-		let result = [];
+		let data = [];
 		balances.forEach(balance => {
 			if (Number(balance.value) >=0) {
-				result.push(balance);
+				data.push(balance);
 			}
 		});
-		return res.json({success: true, result});
+		return res.json({success: true, data});
 	}).catch(error => {
 		return res.json({success: false, error: error});
 	});
@@ -56,14 +57,14 @@ app.get('/api/accounts/:address/balances', (req, res) => {
 
 // do payment
 app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
+	var destination = req.params.address;
 	// post body data
 	var source = req.body.source;
 	var secret = req.body.secret;
 	var value = req.body.value;
 	var currency = req.body.currency;
-	var counterparty = req.body.counterparty || '';
+	var counterparty = req.body.counterparty;
 	var memo = req.body.memo;
-	var destination = req.body.destination;
 	var payment = {
 		source: {
 			address: source,
@@ -83,7 +84,6 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 			prepared.secret = secret;
 			var signedTx = api.sign(prepared.tx_json, prepared.secret);
 			api.submit(signedTx, true).then(result => {
-				result.hash = signedTx.id;
 				return res.json({success: result.resultCode === 'tesSUCCESS', data: result});
 			}).catch(error => {
 				return res.json({success: false, error: error});
@@ -107,10 +107,7 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 	if (ledger !== 0) {
 		options.marker = {ledger: ledger, seq: seq};
 	}
-	var initiated = req.query.initiated;
-	if (initiated === 'false' || initiated === 'true') {
-		options.initiated = (initiated === 'true');
-	}
+	options.initiated = Boolean(req.query.initiated);
 	var counterparty = req.query.counterparty;
 	if (counterparty) {
 		options.counterparty = counterparty;
