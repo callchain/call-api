@@ -94,6 +94,16 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 	});
 });
 
+// create one order
+app.post('/api/accounts/:address/orders', (req, res) => {
+
+});
+
+// cancel one order
+app.delete('/api/accounts/:address/orders/:seq', (req, res) => {
+
+});
+
 // get account transaction history
 app.get('/api/accounts/:address/transactions', (req, res) => {
 	var address = req.params.address;
