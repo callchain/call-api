@@ -87,6 +87,7 @@
     ```
     
     __Request parameters__
+    
     Name | Type | Description
     ---- | ---- | -----------
     source | string | payer wallet address 
@@ -132,6 +133,7 @@
     ```
 
     __Request Data__
+    
     Name | Type | Description
     ---- | ---- | -----------
     secret | string | Payer wallet private key
@@ -178,6 +180,7 @@
     ```
 
     __Request Data__
+    
     Name | Type | Description
     ---- | ---- | -----------
     order | string | Order number
@@ -213,6 +216,7 @@
     ```
     
     __Optional Query Parameters__
+    
     Name | Type | Description
     ---- | ---- | -----------
     ledger | integer | marker ledger for request
