@@ -223,7 +223,7 @@
     seq | integer | marker seq for request, should used with ledger
     initiated | boolean | filter transactions that initiated by the account
     counterparty | string | filter transactions for the counterparty
-    limit | integer | request limit transactions, default is 10
+    limit | integer | request limit transactions, min is 10 and max is 400
     
     __Example__
     

@@ -169,7 +169,10 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 	if (ledger !== 0) {
 		options.marker = {ledger: ledger, seq: seq};
 	}
-	options.initiated = Boolean(req.query.initiated);
+	var initiated = req.query.initiated;
+	if (initiated === 'true' || initiated === 'false') {
+		options.initiated = Boolean(initiated);
+	}
 	var counterparty = req.query.counterparty;
 	if (counterparty) {
 		options.counterparty = counterparty;
