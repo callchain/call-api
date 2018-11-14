@@ -16,10 +16,12 @@
     /api/wallet/new, GET
     ```
 
-    ### Example
-    
+    __Example__
+    ```js
     http://localhost/api/wallet/new
+    ```
     
+    __Result Example__
     ```json
     {
         "success": true,
@@ -30,7 +32,7 @@
     }
     ```
 
-    #### Return Data
+    __Return Data__
     
     Name | Type | Description
     ---- | ---- | -----------
@@ -44,10 +46,12 @@
     /api/accounts/:address/balances, GET
     ```
 
-    ### Example
-    
+    __Example__
+    ```js
     http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/balances
+    ```
     
+    __Result Example__
     ```json
     {
         "success": true,
@@ -60,7 +64,7 @@
     }
     ```
 
-    ### Return Data
+    __Return Data__
     
     Name | Type | Description
     ---- | ---- | -----------
@@ -76,11 +80,13 @@
     /api/accounts/:address/payments, POST
     ```
 
-    ### Example
+    __Example__
     
+    ```js
     http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/payments
+    ```
     
-    #### Request parameters
+    __Request parameters__
     Name | Type | Description
     ---- | ---- | -----------
     source | string | payer wallet address 
@@ -90,23 +96,113 @@
     counterparty | string | counterparty issuer
     memo | string | pay memo, optional
 
+    __Result Example__
     ```json
     {
         "success": true,
         "data": {
             "resultCode": "tesSUCCESS",
-            "resultMessage": "The transaction was applied. Only final in a validated ledger."
+            "resultMessage": "The transaction was applied. Only final in a validated ledger.",
+            "hash": "0FBB4C0B0E7A9DDE2753636A3C1A2E09AF5848FF52497CD675583CA9423039D6"
         }
     }
     ```
 
-    ### Return Data
+    __Return Data__
     
     Name | Type | Description
     ---- | ---- | -----------
     resultCode | string | server results for payment transactions
     resultMessage | string | description of payment transaction results
     hash | string | payment transaction hash
+
+
+- Create Order
+
+    Create order for assets exchange. If matched, Callchain will fill each order. If unmatched, the order will be pending and wait to be taked.
+
+    ```js
+    /api/accounts/:address/orders, POST
+    ```
+    
+    __Example__
+
+    ```js
+    http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders
+    ```
+
+    __Request Data__
+    Name | Type | Description
+    ---- | ---- | -----------
+    secret | string | Payer wallet private key
+    type | string | Type of transaction,sell or buy
+    baseCurrency | string | Base currency name
+    baseCounterparty | string | Base issuer address
+    baseValue | string | Base currency transaction amount
+    counterCurrency | string | Counter currency name
+    counterCounterparty | string | Counter issuer address
+    counterValue | string | Counter currency transaction amount
+
+    ```json
+    {
+        "success": true,
+        "data": {
+            "resultCode": "tesSUCCESS",
+            "resultMessage": "The transaction was applied. Only final in a validated ledger.",
+            "hash": "D40BEEE7DFFAD3DBED51762AE9B03ED4541D99088209B2A0A6E9072A4E19349A"
+        }
+    }
+    ```
+
+    __Return Data__
+    
+    Name | Type | Description
+    ---- | ---- | -----------
+    resultCode | string | Server results for payment transactions
+    resultMessage | string | Description of payment transaction results
+    hash | string | transaction hash
+
+- Cancel Order
+
+    Cancel account's pending order by order sequence number.
+
+
+    ```js
+    /api/accounts/:address/orders/:order, POST
+    ```
+
+    __Example__
+    
+    ```js
+    http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders/9
+    ```
+
+    __Request Data__
+    Name | Type | Description
+    ---- | ---- | -----------
+    order | string | Order number
+    secret | string | Payer wallet private key
+
+    __Result Example__
+    ```json
+    {
+        "success": true,
+        "data": {
+            "resultCode": "tesSUCCESS",
+            "resultMessage": "The transaction was applied. Only final in a validated ledger.",
+            "hash": "F81A17CB363F9B038F97DDABC789CE9F097263E133316DBC298BB3887CB88557"
+        }
+    }
+    ```
+
+    __Return Data__
+    
+    Name | Type | Description
+    ---- | ---- | -----------
+    resultCode | string | Server results for payment transactions
+    resultMessage | string | Description of payment transaction results
+    hash | string | transaction hash
+
 
 - Transaction List
 
@@ -116,7 +212,7 @@
     /api/accounts/:address/transactions, GET
     ```
     
-    #### Request optional query parameters
+    __Optional Query Parameters__
     Name | Type | Description
     ---- | ---- | -----------
     ledger | integer | marker ledger for request
@@ -125,10 +221,13 @@
     counterparty | string | filter transactions for the counterparty
     limit | integer | request limit transactions, default is 10
     
-    ### Example
+    __Example__
     
+    ```js
     http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/transactions
+    ```
     
+    __Result Example__
     ```json
     {
         "success": true,
@@ -235,7 +334,7 @@
     }
     ```
 
-    ### Return Data
+    __Return Data__
     
     Name | Type | Description
     ---- | ---- | -----------
@@ -260,10 +359,13 @@
     /api/transaction/:hash, GET
     ```
 
-    ### Example
+    __Example__
     
+    ```js
     http://localhost/api/transaction/70E6EFFF109AC8133F0A4C2AF8B35F83E20EA72E964EA311DD1598F291C13E76
+    ```
     
+    __Result Example__
     ```json
     {
         "success": true,
@@ -318,7 +420,7 @@
     }
     ```
 
-    ### Return Data
+    __Return Data__
     
     Name | Type | Description
     ---- | ---- | -----------
@@ -329,76 +431,3 @@
     specification | string | Transaction details
     outcome | string | Transaction results
     
-    ### Create Order
-
-- /api/accounts/:address/orders, POST
-
-#### Example
-
-http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders
-
-#### Request parameters
-Name | Type | Description
----- | ---- | -----------
-address | string | Payer wallet address 
-secret | string | Payer wallet private key
-type | string | Type of transaction,sell or buy
-baseCurrency | string | Base currency name
-baseCounterparty | string | Base issuer address
-baseValue | string | Base currency transaction amount
-counterCurrency | string | Counter currency name
-counterCounterparty | string | Counter issuer address
-counterValue | string | Counter currency transaction amount
-
-```json
-{
-    "success": true,
-    "data": {
-        "resultCode": "tesSUCCESS",
-        "resultMessage": "The transaction was applied. Only final in a validated ledger."
-    }
-}
-```
-
-#### Return Value
-
-Name | Type | Description
----- | ---- | -----------
-success | boolean | Request results 
-data | object | Results
-resultCode | string | Server results for payment transactions
-resultMessage | string | Description of payment transaction results
-
-### Cancel Order
-
-- /api/accounts/:address/orders/:order, POST
-
-#### Example
-
-http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders/9
-
-#### Request parameters
-Name | Type | Description
----- | ---- | -----------
-address | string | Payer wallet address 
-order | string | Order number
-secret | string | Payer wallet private key
-
-```json
-{
-    "success": true,
-    "data": {
-        "resultCode": "tesSUCCESS",
-        "resultMessage": "The transaction was applied. Only final in a validated ledger."
-    }
-}
-```
-
-#### Return Value
-
-Name | Type | Description
----- | ---- | -----------
-success | boolean | Request results 
-data | object |  Results
-resultCode | string | Server results for payment transactions
-resultMessage | string | Description of payment transaction results

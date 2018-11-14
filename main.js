@@ -124,6 +124,7 @@ app.post('/api/accounts/:address/orders', upload.array(),(req, res) => {
 		api.prepareOrder(source, order).then(prepared => {
 			var signedTransaction = api.sign(prepared.tx_json, secret);
 			api.submit(signedTransaction, true).then(result => {
+				result.hash = signedTransaction.id;
 				return res.json({ success: true, data: result });
 			}, error => {
 				return res.json({ success: false, error: error });
@@ -135,7 +136,7 @@ app.post('/api/accounts/:address/orders', upload.array(),(req, res) => {
 });
 
 // cancel one order
-app.delete('/api/accounts/:address/orders/:seq',upload.array(), (req, res) => {
+app.delete('/api/accounts/:address/orders/:seq', upload.array(), (req, res) => {
 	var source = req.params.address;
 	var seq = req.params.seq;
 	// post body data
@@ -144,6 +145,7 @@ app.delete('/api/accounts/:address/orders/:seq',upload.array(), (req, res) => {
 		api.prepareOrderCancellation(source, { orderSequence: Number(seq) }).then(prepared => {
 			var signedTransaction = api.sign(prepared.tx_json, secret);
 			api.submit(signedTransaction, true).then(result => {
+				result.hash = signedTransaction.id;
 				return res.json({ success: true, data: result });
 			}, error => {
 				return res.json({ success: false, error: error });
