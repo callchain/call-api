@@ -170,7 +170,7 @@
 
 
     ```js
-    /api/accounts/:address/orders/:order, POST
+    /api/accounts/:address/orders/:order, DELETE
     ```
 
     __Example__
