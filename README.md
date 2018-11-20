@@ -434,4 +434,58 @@
     id | string | Trading hash
     specification | string | Transaction details
     outcome | string | Transaction results
+
+    - Get Market Orders
+
+    Get market orders information by base currency and counter currency
+
+    ```js
+    /api/orderbook/:base_currency+:base_issuer/:counter_currency+:counter_issuer, GET
+    ```
+
+    __Example__
+    
+    ```js
+    http://localhost/api/orderbook/WJF+cLDGEff8xh2PJ7cikh82uTCp5JXAELETRQ/CALL
+    ```
+    
+    __Result Example__
+    ```json
+   {
+        "success": true,
+        "data": {
+            "bids": [
+                {
+                    "price": "0.0002",
+                    "amount": "2.0000"
+                },
+                {
+                    "price": "0.0001",
+                    "amount": "1.0000"
+                }
+            ],
+            "asks": [
+                {
+                    "price": "1.0000",
+                    "amount": "2.0000"
+                },
+                {
+                    "price": "1.5000",
+                    "amount": "1.0000"
+                },
+                {
+                    "price": "2.0000",
+                    "amount": "1.0000"
+                }
+            ]
+        }
+    }
+    ```
+
+    __Return Data__
+    
+    Name | Type | Description
+    ---- | ---- | -----------
+    bids | string | Buy order
+    asks | string | Sell order
     

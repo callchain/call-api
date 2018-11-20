@@ -22,6 +22,34 @@ app.get('/api/wallet/new', (req, res) => {
 	return res.json({success: true, data: ret});
 });
 
+function compare(prop, flag) { //对象排序,flag=true由小到大;flag=false由大到小
+    return function (obj1, obj2) {
+        let val1 = obj1[prop];
+        let val2 = obj2[prop];
+        if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+            val1 = Number(val1);
+            val2 = Number(val2);
+        }
+        if (flag) {
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            if (val1 < val2) {
+                return 1;
+            } else if (val1 > val2) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
 // get account balance
 app.get('/api/accounts/:address/balances', (req, res) => {
 	var address = req.params.address;
@@ -199,6 +227,80 @@ app.get('/api/transaction/:hash', (req, res) => {
 	}).then(tx => {
 		return res.json({success: true, data: tx});
 	}).catch(error => {
+		return res.json({success: false, error: error});
+	});
+});
+//get market orders
+app.get('/api/orderbook/:base/:counter', (req, res) => {
+	///api/orderbook/:base_currency+:base_issuer/:counter_currency+:counter_issuer
+	var base = req.params.base.split('+');
+	var counter = req.params.counter.split('+'); 
+	var base_currency = base[0];
+	var base_issuer = base[1];
+	var counter_currency = counter[0];
+	var counter_issuer = counter[1];
+	api.connect().then(()=> {
+		const order_book = {
+			base: {
+				currency: base_currency,
+				counterparty: base_issuer
+			},
+			counter: {
+				currency: counter_currency,
+				counterparty: counter_issuer
+			}
+		};
+		if (!base_issuer) {
+			delete order_book.base.counterparty;
+		}
+		if (!counter_issuer) {
+			delete order_book.counter.counterparty;
+		}
+
+		api.getOrderbook('cDpYpZPDvij5pgajWwtiVFVo5iWjiEq4JS', order_book).then(result => {
+			let bids = [];//买单
+			let asks = [];//卖单
+			for (let i in result.bids) {
+				let s = result.bids[i].specification;
+				let obj = {
+					price: (Math.floor((Number(s.totalPrice.value * 100000000) / Number(s.quantity.value * 100000000)) * 100000000) / 100000000).toFixed(4),
+					amount: (Math.floor(Number(s.quantity.value) * 10000) / 10000).toFixed(4)
+				};
+				//price 合并
+				let flag = true;
+				for (let j in bids) {
+					if (bids[j].price === obj.price) {
+						flag = false;
+						bids[j].amount = (Math.floor((Number(bids[j].amount) + Number(obj.amount)) * 10000) / 10000).toFixed(4);
+						break;
+					}
+				}
+				if (flag)
+					bids.push(obj);
+			}
+			for (let j in result.asks) {
+				let s = result.asks[j].specification;
+				let obj = {
+					price: (Math.floor((Number(s.totalPrice.value * 100000000) / Number(s.quantity.value * 100000000)) * 100000000) / 100000000).toFixed(4),
+					amount: (Math.floor(Number(s.quantity.value) * 10000) / 10000).toFixed(4)
+				};
+				//price 合并
+				let flag = true;
+				for (let j in asks) {
+					if (asks[j].price === obj.price) {
+						flag = false;
+						asks[j].amount = (Math.floor((Number(asks[j].amount) + Number(obj.amount)) * 10000) / 10000).toFixed(4);
+						break;
+					}
+				}
+				if (flag)
+					asks.push(obj);
+			}
+			return res.json({success: true, data: {bids: bids.sort(compare('price', false)), asks: asks.sort(compare('price', true))}});//买由高到低；卖由低到高
+		}).catch(error => {
+			return res.json({success: false, error: error});
+		})
+	}).catch(error=> {
 		return res.json({success: false, error: error});
 	});
 });
