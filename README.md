@@ -435,7 +435,8 @@
     specification | string | Transaction details
     outcome | string | Transaction results
 
-    - Get Market Orders
+
+- Get Market Orders
 
     Get market orders information by base currency and counter currency
 
@@ -451,7 +452,7 @@
     
     __Result Example__
     ```json
-   {
+    {
         "success": true,
         "data": {
             "bids": [
