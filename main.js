@@ -213,7 +213,8 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
         options.maxLedgerVersion = Number(ledgers[1]);
         return api.getTransactions(address, options);
 	}).then(txs => {
-		return res.json({success: true, data: txs.results.sort(compare('sequence', false))});
+		//return res.json({success: true, data: txs.results.sort(compare('sequence', false))});
+		return res.json({success: true, data: txs.results});
 	}).catch(error => {
 		return res.json({success: false, error: error});
 	});
