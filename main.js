@@ -112,7 +112,7 @@ app.post('/api/accounts/:address/payments', upload.array(), (req, res) => {
 			prepared.secret = secret;
 			var signedTx = api.sign(prepared.tx_json, prepared.secret);
 			api.submit(signedTx, true).then(result => {
-				return res.json({ success: result.resultCode === 'tesSUCCESS', data: result });
+				return res.json({ success: true, data: { success: result.resultCode === 'tesSUCCESS', data: result } });
 			}).catch(error => {
 				return res.json({ success: false, error: error });
 			});
