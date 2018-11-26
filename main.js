@@ -6,11 +6,11 @@ import multer from 'multer';
 //import call from 'call-lib';
 const call = require('call-lib');
 const server = 'wss://s1.callchain.live:5020';
-const api = new call.CallAPI({server: server});
+const api = new call.CallAPI({ server: server });
 
-let upload = multer(); 
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({ extended: true })); 
+let upload = multer();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
 	return res.send('Welcome to Callchain Api!');
@@ -19,35 +19,35 @@ app.get('/', (req, res) => {
 // create new wallet
 app.get('/api/wallet/new', (req, res) => {
 	var ret = api.generateAddress();
-	return res.json({success: true, data: ret});
+	return res.json({ success: true, data: ret });
 });
 
 function compare(prop, flag) { //对象排序,flag=true由小到大;flag=false由大到小
-    return function (obj1, obj2) {
-        let val1 = obj1[prop];
-        let val2 = obj2[prop];
-        if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
-            val1 = Number(val1);
-            val2 = Number(val2);
-        }
-        if (flag) {
-            if (val1 < val2) {
-                return -1;
-            } else if (val1 > val2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } else {
-            if (val1 < val2) {
-                return 1;
-            } else if (val1 > val2) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
+	return function (obj1, obj2) {
+		let val1 = obj1[prop];
+		let val2 = obj2[prop];
+		if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+			val1 = Number(val1);
+			val2 = Number(val2);
+		}
+		if (flag) {
+			if (val1 < val2) {
+				return -1;
+			} else if (val1 > val2) {
+				return 1;
+			} else {
+				return 0;
+			}
+		} else {
+			if (val1 < val2) {
+				return 1;
+			} else if (val1 > val2) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	}
 }
 
 // get account balance
@@ -73,18 +73,18 @@ app.get('/api/accounts/:address/balances', (req, res) => {
 		api.disconnect();
 		let result = [];
 		balances.forEach(balance => {
-			if (Number(balance.value) >=0) {
+			if (Number(balance.value) >= 0) {
 				result.push(balance);
 			}
 		});
-		return res.json({success: true, data: result});
+		return res.json({ success: true, data: result });
 	}).catch(error => {
-		return res.json({success: false, error: error});
+		return res.json({ success: false, error: error });
 	});
 });
 
 // do payment
-app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
+app.post('/api/accounts/:address/payments', upload.array(), (req, res) => {
 	var destination = req.params.address;
 	// post body data
 	var source = req.body.source;
@@ -104,7 +104,7 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 		}
 	}
 	if (memo) {
-		payment.memos = [{data: memo, type: 'string', format: 'text/plain'}];
+		payment.memos = [{ data: memo, type: 'string', format: 'text/plain' }];
 	}
 
 	api.connect().then(() => {
@@ -112,18 +112,18 @@ app.post('/api/accounts/:address/payments',upload.array(), (req, res) => {
 			prepared.secret = secret;
 			var signedTx = api.sign(prepared.tx_json, prepared.secret);
 			api.submit(signedTx, true).then(result => {
-				return res.json({success: result.resultCode === 'tesSUCCESS', data: result});
+				return res.json({ success: result.resultCode === 'tesSUCCESS', data: result });
 			}).catch(error => {
-				return res.json({success: false, error: error});
+				return res.json({ success: false, error: error });
 			});
 		}).catch(error => {
-			return res.json({success: false, error: error});
+			return res.json({ success: false, error: error });
 		});
 	});
 });
 
 // create one order
-app.post('/api/accounts/:address/orders', upload.array(),(req, res) => {
+app.post('/api/accounts/:address/orders', upload.array(), (req, res) => {
 	var source = req.params.address;
 	// post body data
 	var secret = req.body.secret;
@@ -162,7 +162,30 @@ app.post('/api/accounts/:address/orders', upload.array(),(req, res) => {
 		})
 	});
 });
-
+//get entrust orders
+app.get('/api/accounts/:address/entrust', (req, res) => {
+	var address = req.params.address;
+	api.connect().then(()=> {
+		api.getOrders(address).then(result=> {
+			/*let orders = [];
+			result.forEach(order=> {
+				orders.push({
+					type: order.specification.direction,
+					pairs: (order.specification.quantity.currency === CURRENCY ? CURRENCY : (order.specification.quantity.currency + ':' + order.specification.quantity.counterparty)) + '/' +
+						(order.specification.totalPrice.currency === CURRENCY ? CURRENCY : (order.specification.totalPrice.currency + ':' + order.specification.totalPrice.counterparty)),
+					price: (order.specification.totalPrice.value / order.specification.quantity.value) + '',
+					amount: order.specification.quantity.value,
+					seq: order.properties.sequence
+				});
+			});*/
+			return res.json({ success: true, data: result });
+		}).catch(error =>{
+			return res.json({ success: false, error: error });
+		})
+	}).catch(error=> {
+		return res.json({ success: false, error: error });
+	});
+});
 // cancel one order
 app.delete('/api/accounts/:address/orders/:seq', upload.array(), (req, res) => {
 	var source = req.params.address;
@@ -195,7 +218,7 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 	var ledger = Number(req.query.ledger) || 0;
 	var seq = Number(req.query.seq) || 0;
 	if (ledger !== 0) {
-		options.marker = {ledger: ledger, seq: seq};
+		options.marker = { ledger: ledger, seq: seq };
 	}
 	var initiated = req.query.initiated;
 	if (initiated === 'true' || initiated === 'false') {
@@ -209,38 +232,37 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 		return api.getServerInfo();
 	}).then(serverInfo => {
 		const ledgers = serverInfo.completeLedgers.split('-');
-        options.minLedgerVersion = Number(ledgers[0]);
-        options.maxLedgerVersion = Number(ledgers[1]);
-        return api.getTransactions(address, options);
+		options.minLedgerVersion = Number(ledgers[0]);
+		options.maxLedgerVersion = Number(ledgers[1]);
+		return api.getTransactions(address, options);
 	}).then(txs => {
 		//return res.json({success: true, data: txs.results.sort(compare('sequence', false))});
-		return res.json({success: true, data: txs.results});
+		return res.json({ success: true, data: txs.results });
 	}).catch(error => {
-		return res.json({success: false, error: error});
+		return res.json({ success: false, error: error });
 	});
 });
-
 // get one transaction detail
 app.get('/api/transaction/:hash', (req, res) => {
 	var hash = req.params.hash;
 	api.connect().then(() => {
 		return api.getTransaction(hash);
 	}).then(tx => {
-		return res.json({success: true, data: tx});
+		return res.json({ success: true, data: tx });
 	}).catch(error => {
-		return res.json({success: false, error: error});
+		return res.json({ success: false, error: error });
 	});
 });
 //get market orders
 app.get('/api/orderbook/:base/:counter', (req, res) => {
 	///api/orderbook/:base_currency+:base_issuer/:counter_currency+:counter_issuer
 	var base = req.params.base.split('+');
-	var counter = req.params.counter.split('+'); 
+	var counter = req.params.counter.split('+');
 	var base_currency = base[0];
 	var base_issuer = base[1];
 	var counter_currency = counter[0];
 	var counter_issuer = counter[1];
-	api.connect().then(()=> {
+	api.connect().then(() => {
 		const order_book = {
 			base: {
 				currency: base_currency,
@@ -297,12 +319,12 @@ app.get('/api/orderbook/:base/:counter', (req, res) => {
 				if (flag)
 					asks.push(obj);
 			}
-			return res.json({success: true, data: {bids: bids.sort(compare('price', false)), asks: asks.sort(compare('price', true))}});//买由高到低；卖由低到高
+			return res.json({ success: true, data: { bids: bids.sort(compare('price', false)), asks: asks.sort(compare('price', true)) } });//买由高到低；卖由低到高
 		}).catch(error => {
-			return res.json({success: false, error: error});
+			return res.json({ success: false, error: error });
 		})
-	}).catch(error=> {
-		return res.json({success: false, error: error});
+	}).catch(error => {
+		return res.json({ success: false, error: error });
 	});
 });
 
