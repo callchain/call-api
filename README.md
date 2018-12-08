@@ -207,6 +207,26 @@
     resultMessage | string | Description of payment transaction results
     hash | string | transaction hash
 
+- Get Account Orders
+
+    Get account pending orders, those are not filled.
+
+    ```js
+    /api/accounts/:address/orders, GET
+    ```
+
+    __Example__
+
+    ```js
+    http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/orders
+    ```
+
+    __Result Example__
+    ```json
+    
+    ```
+
+
 
 - Transaction List
 
