@@ -8,7 +8,6 @@
 
 ## Interfaces
 
-@[TOC]
 
 - New Wallet
 
