@@ -8,6 +8,7 @@
 
 ## Interfaces
 
+
 - New Wallet
 
     Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
