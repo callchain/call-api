@@ -167,22 +167,12 @@ app.post('/api/accounts/:address/orders', upload.array(), (req, res) => {
 		})
 	});
 });
-//get entrust orders
-app.get('/api/accounts/:address/entrust', (req, res) => {
+
+//get account pending orders
+app.get('/api/accounts/:address/orders', (req, res) => {
 	var address = req.params.address;
 	api.connect().then(()=> {
 		api.getOrders(address).then(result=> {
-			/*let orders = [];
-			result.forEach(order=> {
-				orders.push({
-					type: order.specification.direction,
-					pairs: (order.specification.quantity.currency === CURRENCY ? CURRENCY : (order.specification.quantity.currency + ':' + order.specification.quantity.counterparty)) + '/' +
-						(order.specification.totalPrice.currency === CURRENCY ? CURRENCY : (order.specification.totalPrice.currency + ':' + order.specification.totalPrice.counterparty)),
-					price: (order.specification.totalPrice.value / order.specification.quantity.value) + '',
-					amount: order.specification.quantity.value,
-					seq: order.properties.sequence
-				});
-			});*/
 			return res.json({ success: true, data: result });
 		}).catch(error =>{
 			return res.json({ success: false, error: error });
@@ -191,6 +181,7 @@ app.get('/api/accounts/:address/entrust', (req, res) => {
 		return res.json({ success: false, error: error });
 	});
 });
+
 // cancel one order
 app.delete('/api/accounts/:address/orders/:seq', upload.array(), (req, res) => {
 	var source = req.params.address;
@@ -247,6 +238,7 @@ app.get('/api/accounts/:address/transactions', (req, res) => {
 		return res.json({ success: false, error: error });
 	});
 });
+
 // get one transaction detail
 app.get('/api/transaction/:hash', (req, res) => {
 	var hash = req.params.hash;
@@ -258,9 +250,11 @@ app.get('/api/transaction/:hash', (req, res) => {
 		return res.json({ success: false, error: error });
 	});
 });
+
 //get market orders
-app.get('/api/orderbook/:base/:counter', (req, res) => {
+app.get('/api/accounts/:address/orderbook/:base/:counter', (req, res) => {
 	///api/orderbook/:base_currency+:base_issuer/:counter_currency+:counter_issuer
+	var address = req.params.address;
 	var base = req.params.base.split('+');
 	var counter = req.params.counter.split('+');
 	var base_currency = base[0];
@@ -285,7 +279,7 @@ app.get('/api/orderbook/:base/:counter', (req, res) => {
 			delete order_book.counter.counterparty;
 		}
 
-		api.getOrderbook('cDpYpZPDvij5pgajWwtiVFVo5iWjiEq4JS', order_book).then(result => {
+		api.getOrderbook(address, order_book).then(result => {
 			let bids = [];//买单
 			let asks = [];//卖单
 			for (let i in result.bids) {
