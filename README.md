@@ -7,8 +7,8 @@
 3. node dist/main.js or `pm2 start dist/main.js` in production
 
 - [Interfaces](#Interfaces)
-  - [New Wallet](#New Wallet)
-  - [Account Balance](#Account Balance)
+  - [New Wallet](#New-Wallet)
+  - [Account Balance](#Account-Balance)
 
 # Interfaces
 
