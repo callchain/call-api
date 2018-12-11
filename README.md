@@ -6,10 +6,14 @@
 2. npm run build
 3. node dist/main.js or `pm2 start dist/main.js` in production
 
-## Interfaces
+- [Interfaces](#Interfaces)
+  - [New Wallet](#New Wallet)
+  - [Account Balance](#Account Balance)
+
+# Interfaces
 
 
-- New Wallet
+## New Wallet
 
     Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
 
@@ -40,7 +44,7 @@
     secret | string | CALL wallet secret
     address | string | CALL wallet address
 
-- Account Balance
+## Account Balance
 
     Get balance of callchain account, return data is array of balance. Each item contains value, currency and counterparty. When currency is call, counterparty is empty. Counterparty is the currency issuer.
     ```js
