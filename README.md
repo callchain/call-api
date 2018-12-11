@@ -230,10 +230,59 @@
 
     __Result Example__
     ```json
-    
+    {
+    "success": true,
+    "data": [
+        {
+            "specification": {
+                "direction": "buy",
+                "quantity": {
+                    "currency": "WJF",
+                    "value": "10",
+                    "counterparty": "cLDGEff8xh2PJ7cikh82uTCp5JXAELETRQ"
+                },
+                "totalPrice": {
+                    "currency": "CALL",
+                    "value": "0.1"
+                }
+            },
+            "properties": {
+                "maker": "cLDGEff8xh2PJ7cikh82uTCp5JXAELETRQ",
+                "sequence": 83,
+                "makerExchangeRate": "100"
+            }
+        },
+        {
+            "specification": {
+                "direction": "sell",
+                "quantity": {
+                    "currency": "WJF",
+                    "value": "99",
+                    "counterparty": "cLDGEff8xh2PJ7cikh82uTCp5JXAELETRQ"
+                },
+                "totalPrice": {
+                    "currency": "CALL",
+                    "value": "158.4"
+                }
+            },
+            "properties": {
+                "maker": "cLDGEff8xh2PJ7cikh82uTCp5JXAELETRQ",
+                "sequence": 107,
+                "makerExchangeRate": "1.6"
+            }
+        }
+        ]
+    }
     ```
-
-
+    __Return Data__
+    
+    Name | Type | Description
+    ---- | ---- | -----------
+    data | array | Transaction information array
+    direction | string | Type of order
+    quantity | object | Number of order
+    totalPrice | object | Total price
+    makerExchangeRate | string | Unit Price
 
 ## Transaction List
 - Get account transaction history. Each request wil return `results` as transactions list and `marker` as a marker for next request. When `marker` is missing, there is no data for the account.
