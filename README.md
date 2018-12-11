@@ -9,10 +9,17 @@
 - [Interfaces](#Interfaces)
   - [New Wallet](#New-Wallet)
   - [Account Balance](#Account-Balance)
+  - [Payment](#Payment)
+  - [Create Order](#Create-Order)
+  - [Cancel Order](#Cancel-Order)
+  - [Get Account Orders](#Get-Account-Orders)
+  - [Transaction List](#Transaction-List)
+  - [Transaction Detail](#Transaction-Detail)
+  - [Get Market Orders](#Get-Market-Orders)
 
 # Interfaces
 
-##New Wallet
+## New Wallet
 - Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
 
     ```js
@@ -77,9 +84,8 @@
     value | string | currency balance value
     counterparty | string | currency issuer
 
-- Payment
-
-    Pay to destination of Callchain assets. When do payment, secret is required. So the api is only for internal deployment, and is not for decentrialized application.
+## Payment
+- Pay to destination of Callchain assets. When do payment, secret is required. So the api is only for internal deployment, and is not for decentrialized application.
 
     ```js
     /api/accounts/:address/payments, POST
@@ -123,9 +129,8 @@
     hash | string | payment transaction hash
 
 
-- Create Order
-
-    Create order for assets exchange. If matched, Callchain will fill each order. If unmatched, the order will be pending and wait to be taked.
+## Create Order
+- Create order for assets exchange. If matched, Callchain will fill each order. If unmatched, the order will be pending and wait to be taked.
 
     ```js
     /api/accounts/:address/orders, POST
@@ -169,9 +174,8 @@
     resultMessage | string | Description of payment transaction results
     hash | string | transaction hash
 
-- Cancel Order
-
-    Cancel account's pending order by order sequence number.
+## Cancel Order
+- Cancel account's pending order by order sequence number.
 
 
     ```js
@@ -211,9 +215,8 @@
     resultMessage | string | Description of payment transaction results
     hash | string | transaction hash
 
-- Get Account Orders
-
-    Get account pending orders, those are not filled.
+## Get Account Orders
+- Get account pending orders, those are not filled.
 
     ```js
     /api/accounts/:address/orders, GET
@@ -232,9 +235,8 @@
 
 
 
-- Transaction List
-
-    Get account transaction history. Each request wil return `results` as transactions list and `marker` as a marker for next request. When `marker` is missing, there is no data for the account.
+## Transaction List
+- Get account transaction history. Each request wil return `results` as transactions list and `marker` as a marker for next request. When `marker` is missing, there is no data for the account.
 
     ```js
     /api/accounts/:address/transactions, GET
@@ -380,9 +382,8 @@
     
    
 
-- Transaction Detail
-
-    Get transaction detail information by transaction hash
+## Transaction Detail
+- Get transaction detail information by transaction hash
 
     ```js
     /api/transaction/:hash, GET
@@ -461,9 +462,8 @@
     outcome | string | Transaction results
 
 
-- Get Market Orders
-
-    Get market orders information by base currency and counter currency
+## Get Market Orders
+- Get market orders information by base currency and counter currency
 
     ```js
     /api/orderbook/:base_currency+:base_issuer/:counter_currency+:counter_issuer, GET
