@@ -12,10 +12,8 @@
 
 # Interfaces
 
-
-## New Wallet
-
-    Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
+##New Wallet
+- Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
 
     ```js
     /api/wallet/new, GET
@@ -45,18 +43,20 @@
     address | string | CALL wallet address
 
 ## Account Balance
+- Get balance of callchain account, return data is array of balance. Each item contains value, currency and counterparty. When currency is call, counterparty is empty. Counterparty is the currency issuer.
 
-    Get balance of callchain account, return data is array of balance. Each item contains value, currency and counterparty. When currency is call, counterparty is empty. Counterparty is the currency issuer.
     ```js
     /api/accounts/:address/balances, GET
     ```
 
     __Example__
+
     ```js
     http://localhost/api/accounts/cnW1i1c6Wkz9ucQC7uK1UcbFNr5VUYUvxB/balances
     ```
     
     __Result Example__
+
     ```json
     {
         "success": true,
