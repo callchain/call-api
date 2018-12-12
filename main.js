@@ -183,7 +183,7 @@ app.get('/api/accounts/:address/orders', (req, res) => {
 });
 
 // cancel one order
-app.delete('/api/accounts/:address/orders/:seq', upload.array(), (req, res) => {
+app.post('/api/accounts/:address/orders/:seq', upload.array(), (req, res) => {
 	var source = req.params.address;
 	var seq = req.params.seq;
 	// post body data
