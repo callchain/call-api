@@ -15,7 +15,7 @@
   - [Get Account Orders](#Get-Account-Orders)
   - [Transaction List](#Transaction-List)
   - [Transaction Detail](#Transaction-Detail)
-  - [Get Market Orders](#Get-Market-Orders)
+  - [Get Market Orderbook](#Get-Market-Orders)
 
 # Interfaces
 
@@ -511,7 +511,7 @@
     outcome | string | Transaction results
 
 
-## Get Market Orders
+## Get Market Orderbook
 - Get market orders information by base currency and counter currency
 
     ```js
