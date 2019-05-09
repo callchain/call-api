@@ -101,7 +101,9 @@ app.post('/api/accounts/:address/payments', upload.array(), (req, res) => {
 		destination: {
 			address: destination,
 			amount: { value: value, currency: currency, counterparty: counterparty }
-		}
+		}/*,
+		invoiceID:'0000000000000000000000000000000000000000000000000000000000000001',
+		invoice:'123456789'*/
 	}
 	if (memo) {
 		payment.memos = [{ data: memo, type: 'string', format: 'text/plain' }];
@@ -324,6 +326,44 @@ app.get('/api/accounts/:address/orderbook/:base/:counter', (req, res) => {
 		})
 	}).catch(error => {
 		return res.json({ success: false, error: error });
+	});
+});
+// do IssueSet
+app.post('/api/issueset', upload.array(), (req, res) => {
+	// post body data
+	var source = req.body.source;
+	var secret = req.body.secret;
+	var value = req.body.value;
+	var currency = req.body.currency;
+	var nonFungible = req.body.nonFungible;//true：721,false：非721
+	const issueset = {
+		"total": {
+			"value": value,
+			"currency": currency,
+			"issuer": source
+		}
+	}
+	if(nonFungible){
+		issueset.nonFungible=true;
+	}
+	
+	api.connect().then(() => {
+		api.prepareIssueSet(source, issueset).then(prepared => {
+			prepared.secret = secret;
+			var signedTx = api.sign(prepared.tx_json, prepared.secret);
+			api.submit(signedTx, true).then(result => {
+				if(result.resultCode === 'tesSUCCESS'){
+					return res.json({ success: result.resultCode === 'tesSUCCESS', data: result });
+				}else{
+					return res.json({ success: result.resultCode === 'tesSUCCESS', error: result });
+				}
+				
+			}).catch(error => {
+				return res.json({ success: false, error: error });
+			});
+		}).catch(error => {
+			return res.json({ success: false, error: error });
+		});
 	});
 });
 
