@@ -1,4 +1,4 @@
-# Callchain api ONLY for application internal deployment
+# Callchain api ONLY for application *INTERNAL* deployment
 
 ## Runing
 
