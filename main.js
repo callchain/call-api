@@ -366,6 +366,45 @@ app.post('/api/issueset', upload.array(), (req, res) => {
 		});
 	});
 });
+// do Settings
+app.post('/api/settings', upload.array(), (req, res) => {
+	// post body data
+	var source = req.body.source;
+	var secret = req.body.secret;
+	const settings = {
+		"nickname": "wujingfei"
+	};
+	api.connect().then(() => {
+		api.prepareSettings(source, settings).then(prepared => {
+			prepared.secret = secret;
+			var signedTx = api.sign(prepared.tx_json, prepared.secret);
+			api.submit(signedTx, true).then(result => {
+				if(result.resultCode === 'tesSUCCESS'){
+					return res.json({ success: result.resultCode === 'tesSUCCESS', data: result });
+				}else{
+					return res.json({ success: result.resultCode === 'tesSUCCESS', error: result });
+				}
+				
+			}).catch(error => {
+				return res.json({ success: false, error: error });
+			});
+		}).catch(error => {
+			return res.json({ success: false, error: error });
+		});
+	});
+});
+// do Settings
+app.post('/api/getAccountInfo', upload.array(), (req, res) => {
+	// post body data
+	var source = req.body.source;
+	api.connect().then(() => {
+		api.getAccountInfo(source).then(info => {
+			return res.json({ success: true, data: info });
+		}).catch(error => {
+			return res.json({ success: false, error: error });
+		});
+	});
+});
 
 app.listen(3000, () => {
 	console.log('Callchain Api listening on port 3000!');
