@@ -10,21 +10,23 @@ This Api is **ONLY** used for application **INTERNAL** deployment, because it's 
 
 1. install dependencies
 
-````
+```js
 npm install
 ```
 
 2. build application
 
-```
+```js
 npm run build
 ```
 
 3. run with nohup or pm2/forever tools
 
-```
+```js
 node dist/main.js or `pm2 start dist/main.js` in production
 ```
+
+
 
 
 ## Interfaces
