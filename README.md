@@ -1,25 +1,53 @@
-# Callchain api ONLY for application *INTERNAL* deployment
+# Callchain API
 
-## Runing
 
-1. npm install
-2. npm run build
-3. node dist/main.js or `pm2 start dist/main.js` in production
+## Warning
 
-- [Interfaces](#Interfaces)
-  - [New Wallet](#New-Wallet)
-  - [Account Balance](#Account-Balance)
-  - [Payment](#Payment)
-  - [Create Order](#Create-Order)
-  - [Cancel Order](#Cancel-Order)
-  - [Get Account Orders](#Get-Account-Orders)
-  - [Transaction List](#Transaction-List)
-  - [Transaction Detail](#Transaction-Detail)
-  - [Get Market Orderbook](#Get-Market-Orders)
+This Api is **ONLY** used for application **INTERNAL** deployment, because it's mainly used to sign user's transaction when user's environment is not Node.JS or Javascript. Callchain now not provide library for other languages except Node.JS and Javascript.
 
-# Interfaces
 
-## New Wallet
+## Getting Started
+
+1. install dependencies
+
+````
+npm install
+```
+
+2. build application
+
+```
+npm run build
+```
+
+3. run with nohup or pm2/forever tools
+
+```
+node dist/main.js or `pm2 start dist/main.js` in production
+```
+
+
+## Interfaces
+
+
+- [Callchain API](#callchain-api)
+  - [Warning](#warning)
+  - [Getting Started](#getting-started)
+  - [Interfaces](#interfaces)
+    - [New Wallet](#new-wallet)
+    - [Account Balance](#account-balance)
+    - [Payment](#payment)
+    - [Create Order](#create-order)
+    - [Cancel Order](#cancel-order)
+    - [Get Account Orders](#get-account-orders)
+    - [Transaction List](#transaction-list)
+    - [Transaction Detail](#transaction-detail)
+    - [Get Market Orderbook](#get-market-orderbook)
+
+
+
+### New Wallet
+
 - Create new callchain wallet, return address and secret. Application should keep save of the secret for user or for application self.
 
     ```js
@@ -49,7 +77,8 @@
     secret | string | CALL wallet secret
     address | string | CALL wallet address
 
-## Account Balance
+### Account Balance
+
 - Get balance of callchain account, return data is array of balance. Each item contains value, currency and counterparty. When currency is call, counterparty is empty. Counterparty is the currency issuer.
 
     ```js
@@ -84,7 +113,8 @@
     value | string | currency balance value
     counterparty | string | currency issuer
 
-## Payment
+### Payment
+
 - Pay to destination of Callchain assets. When do payment, secret is required. So the api is only for internal deployment, and is not for decentrialized application.
 
     ```js
@@ -129,7 +159,8 @@
     hash | string | payment transaction hash
 
 
-## Create Order
+### Create Order
+
 - Create order for assets exchange. If matched, Callchain will fill each order. If unmatched, the order will be pending and wait to be taked.
 
     ```js
@@ -174,7 +205,8 @@
     resultMessage | string | Description of payment transaction results
     hash | string | transaction hash
 
-## Cancel Order
+### Cancel Order
+
 - Cancel account's pending order by order sequence number.
 
 
@@ -215,7 +247,8 @@
     resultMessage | string | Description of payment transaction results
     hash | string | transaction hash
 
-## Get Account Orders
+### Get Account Orders
+
 - Get account pending orders, those are not filled.
 
     ```js
@@ -284,7 +317,8 @@
     totalPrice | object | Total price
     makerExchangeRate | string | Unit Price
 
-## Transaction List
+### Transaction List
+
 - Get account transaction history. Each request wil return `results` as transactions list and `marker` as a marker for next request. When `marker` is missing, there is no data for the account.
 
     ```js
@@ -431,7 +465,8 @@
     
    
 
-## Transaction Detail
+### Transaction Detail
+
 - Get transaction detail information by transaction hash
 
     ```js
@@ -511,7 +546,8 @@
     outcome | string | Transaction results
 
 
-## Get Market Orderbook
+### Get Market Orderbook
+
 - Get market orders information by base currency and counter currency
 
     ```js
